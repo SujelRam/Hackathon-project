@@ -18,7 +18,8 @@ The application provides a catalog of pre-built demos and supports user-uploaded
 - **Deployment**: Runs as a local Streamlit app, with potential for cloud deployment (e.g., via Streamlit Cloud or Heroku)
 
 ## Prototype
-The current prototype is a fully functional Streamlit web application that serves as a proof-of-concept for HoloLearn. It includes:
+The current prototype is a fully functional Streamlit web application that serves as a proof-of-concept for HoloLearn.Link : https://hololearn.streamlit.app/ 
+It includes:
 - A YouTube-like header with a search bar for topic exploration.
 - A gallery of educational demos (e.g., Human Heart, Cell Structure, Solar System, DNA Structure).
 - An upload feature for users to provide their own MP4/WebM videos.
@@ -29,3 +30,4 @@ The prototype demonstrates the core functionality of browsing, uploading, and vi
 
 ## Sample Display
 <image src="Videos/hologramdisplay.jpg">
+<image src="Videos/hh.jpg">
