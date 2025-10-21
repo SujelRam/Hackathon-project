@@ -108,19 +108,20 @@ st.markdown(
 
 st.write("")  # spacing
 
-# --- Simple in-memory catalogue (mock "YouTube-like" thumbnails) ---
+# --- Catalog ---
 catalog = [
-    {"id": "demo_heart", "title": "Human Heart (Hologram demo)", "file": "videos/heart.mp4", "description": "Rotating heart model for high-school biology."},
-    {"id": "demo_cell", "title": "Cell Structure", "file": "Videos/Atom.mp4,", "description": "Transparent cell layers with labels."},
-    {"id": "demo_solar", "title": "Solar System (Hologram)", "file": "videos/solar.mp4", "description": "Mini solar system orbit model."},
+    {"id": "demo_heart", "title": "Human Heart (Hologram demo)", "description": "Rotating heart model for high-school biology."},
+    {"id": "demo_cell", "title": "Cell Structure", "description": "Transparent cell layers with labels."},
+    {"id": "demo_solar", "title": "Solar System (Hologram)", "description": "Mini solar system orbit model."},
+    {"id": "demo_dna", "title": "DNA Structure", "description": "3D rotating double-helix DNA model."}
 ]
 
+# --- Display catalog as gallery ---
 st.markdown("<div class='gallery'>", unsafe_allow_html=True)
 cols = st.columns([1,1,1])
 
 for i, item in enumerate(catalog):
     with cols[i % 3]:
-        # clicking the button chooses the demo item
         if st.button(item["title"], key=item["id"]):
             st.session_state["selected"] = item["id"]
         st.markdown(
@@ -157,9 +158,9 @@ def make_data_url(file_bytes: bytes, mime="video/mp4"):
     return f"data:{mime};base64,{b64}"
 
 if build:
-    if not uploaded:
-        st.error("Please upload a video first (MP4 or WebM).")
-    else:
+    if not uploaded and "selected" not in st.session_state:
+        st.error("Please upload a video first (MP4 or WebM) or select a demo.")
+    elif uploaded:
         # read bytes and prepare data URL
         data = uploaded.read()
         data_url = make_data_url(data, mime=uploaded.type or "video/mp4")
@@ -188,6 +189,44 @@ if build:
         </div>
         """)
         st.components.v1.html(html, height=700, scrolling=True)
+    elif "selected" in st.session_state:
+        # Use Atom.mp4 for Human Heart and Cell Structure demos
+        if st.session_state["selected"] in ["demo_heart", "demo_cell"]:
+            video_path = "Videos/Atom.mp4"
+            try:
+                with open(video_path, "rb") as f:
+                    data = f.read()
+                data_url = make_data_url(data, mime="video/mp4")
+
+                # Create HTML for 4-view (2x2) layout
+                html = textwrap.dedent(f"""
+                <div class="holo-wrap">
+                  <div class="holo-container">
+                    <div style="text-align:center; color:#9ff; font-weight:600; margin-bottom:8px;">Hologram Preview — place pyramid at center of phone to project</div>
+                    <div class="cross">
+                      <!-- Top-left -->
+                      <video class="holo" src="{data_url}" autoplay loop muted playsinline controls></video>
+                      <!-- Top-right -->
+                      <video class="holo" src="{data_url}" autoplay loop muted playsinline controls style="transform: scaleX(-1);"></video>
+                      <!-- Bottom-left -->
+                      <video class="holo" src="{data_url}" autoplay loop muted playsinline controls style="transform: scaleY(-1);"></video>
+                      <!-- Bottom-right -->
+                      <video class="holo" src="{data_url}" autoplay loop muted playsinline controls style="transform: scaleX(-1) scaleY(-1);"></video>
+                    </div>
+                    <div class="projector-instructions">
+                      Place a transparent pyramid (made from acetate/plastic) at the center where the 4 corners meet.
+                      Then hold the phone face-up — the reflections create a floating hologram in the pyramid.
+                    </div>
+                  </div>
+                </div>
+                """)
+                st.components.v1.html(html, height=700, scrolling=True)
+            except FileNotFoundError:
+                st.error(f"Video file not found at {video_path}. Please ensure the file exists.")
+            except Exception as e:
+                st.error(f"Error loading video: {str(e)}")
+        else:
+            st.error("Demo video not available for this selection. Please upload a video.")
 
 # --- Footer + short help + citation ---
 st.markdown("---")
