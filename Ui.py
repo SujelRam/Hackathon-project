@@ -110,7 +110,6 @@ st.write("")  # spacing
 
 # --- Catalog ---
 catalog = [
-    {"id": "demo_heart", "title": "Human Heart (Hologram demo)", "description": "Rotating heart model for high-school biology."},
     {"id": "demo_cell", "title": "Cell Structure", "description": "Transparent cell layers with labels."},
     {"id": "demo_solar", "title": "Solar System (Hologram)", "description": "Mini solar system orbit model."},
     {"id": "demo_dna", "title": "DNA Structure", "description": "3D rotating double-helix DNA model."}
